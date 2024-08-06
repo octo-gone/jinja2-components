@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Release
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Cache Poetry
+        id: cache-poetry
+        uses: actions/cache@v4
+        with:
+          path: ~/.poetry
+          key: poetry
+      - name: Install Poetry
+        if: steps.cache-poetry.outputs.cache-hit != 'true'
+        run: |
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+      - name: Add Poetry to $PATH
+        run: |
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+      - name: Add version to environment vars
+        run: |
+          PROJECT_NAME=$(poetry version | awk {'print $1'})
+          PROJECT_VERSION=$(poetry version --short)
+          echo "PROJECT_NAME=$PROJECT_NAME" >> $GITHUB_ENV
+          echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_ENV
+      - name: Check if tag version matches project version
+        run: |
+          TAG=$(git describe HEAD --tags --abbrev=0)
+          echo $TAG
+          echo $PROJECT_VERSION
+          if [[ "$TAG" != "v$PROJECT_VERSION" ]]; then exit 1; fi
+      - name: Get Poetry version
+        run: poetry --version
+      - name: Check pyproject.toml validity
+        run: poetry check --no-interaction
+      - name: Install deps
+        run: |
+          poetry config virtualenvs.in-project true
+          poetry install --no-interaction
+      - name: Build
+        run: poetry build
+      - name: Create Release Draft
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: |
+            dist/${{env.PROJECT_NAME}}-${{env.PROJECT_VERSION}}-py3-none-any.whl
+            dist/${{env.PROJECT_NAME}}-${{env.PROJECT_VERSION}}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
