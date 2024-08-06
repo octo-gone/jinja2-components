@@ -33,9 +33,7 @@ jobs:
           echo "$HOME/.poetry/bin" >> $GITHUB_PATH
       - name: Add version to environment vars
         run: |
-          PROJECT_NAME=$(poetry version | awk {'print $1'})
           PROJECT_VERSION=$(poetry version --short)
-          echo "PROJECT_NAME=$PROJECT_NAME" >> $GITHUB_ENV
           echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_ENV
       - name: Check if tag version matches project version
         run: |
@@ -58,7 +56,7 @@ jobs:
         with:
           draft: true
           files: |
-            dist/${{env.PROJECT_NAME}}-${{env.PROJECT_VERSION}}-py3-none-any.whl
-            dist/${{env.PROJECT_NAME}}-${{env.PROJECT_VERSION}}.tar.gz
+            dist/jinja2_components-${{env.PROJECT_VERSION}}-py3-none-any.whl
+            dist/jinja2_components-${{env.PROJECT_VERSION}}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
