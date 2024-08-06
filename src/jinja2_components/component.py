@@ -15,10 +15,12 @@ class Component:
 
     @classmethod
     def get_template(cls, env: "Environment", *args, **kwargs):
-        if cls.template is not None:
+        if hasattr(cls, "template") and cls.template is not None:
             return cls.template
-        assert (
-            cls.template_name is not None
-        ), "Either template_name or template must be set"
+        if not hasattr(cls, "template_name") or cls.template_name is None:
+            raise RuntimeError(
+                "Either template_name or template must "
+                f"be set for component '{cls.__name__}'."
+            )
         cls.template = env.get_template(cls.template_name)
         return cls.template

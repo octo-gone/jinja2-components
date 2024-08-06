@@ -6,13 +6,24 @@ authors = ["octo-gone <nklimin007@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-jinja2 = "^3.1.4"
+python = "^3.8"
+jinja2 = ">=2.10"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.8.0"
 pylint = "^3.2.6"
 mypy = "^1.11.1"
+coverage = "^7.6.1"
+
+[tool.coverage.run]
+omit = [
+    "tests/*"
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "if t.TYPE_CHECKING:"
+]
 
 [build-system]
 requires = ["poetry-core"]

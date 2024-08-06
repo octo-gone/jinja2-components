@@ -52,9 +52,7 @@ class ComponentsExtension(Extension):
                 variable = parser.stream.expect("name").value
                 if not parser.stream.current.test("block_end"):
                     parser.fail(
-                        "expected token 'block_end', got {!r}".format(
-                            describe_token(parser.stream.current)
-                        ),
+                        f"expected token 'block_end', got {describe_token(parser.stream.current)!r}",
                         parser.stream.current.lineno,
                     )
                 break
