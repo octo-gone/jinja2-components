@@ -15,20 +15,21 @@ class Empty(Component):
     pass
 
 
-class Unregistered(Component):
-    template = Template("replacement")
-
-
 class TestComponent(unittest.TestCase):
     def test_empty(self):
         with self.assertRaises(RuntimeError) as exc:
             env.from_string("{% empty %}").render()
         self.assertEqual(
             exc.exception.args[0],
-            "Either template_name or template must be set for component 'Empty'.",
+            "Either template_name, template_str or template "
+            "must be set for component 'Empty'.",
         )
 
     def test_unregistered(self):
+        print(ComponentsExtension.tags)
         with self.assertRaises(TemplateSyntaxError) as exc:
-            env.from_string("{% tag %}")
-        self.assertEqual(exc.exception.message, "Encountered unknown tag 'tag'.")
+            env.from_string("{% unregistered_tag %}")
+        self.assertEqual(
+            exc.exception.message,
+            "Encountered unknown tag 'unregistered_tag'.",
+        )

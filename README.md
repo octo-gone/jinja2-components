@@ -104,24 +104,24 @@ print(template.render())
 
 ### Component in component
 
-There is a drawback: if the component's template was not instantiated from the environment, then the template also requires extensions. For now we can use `env.from_string` or pass extensions where required.
+If the component's template was set directly, then this template also requires extensions. You can pass extensions where required or as a workaround use `env.from_string`.
 
-But it possible to use `template_file` class variable for later instantiation from environment.
+But it possible to use `template_str` and `template_name` class variables for later instantiation from environment.
 
 ```python
 @register(name="button")
 class Button(Component):
-    template = env.from_string("<button>{{ body }}</button>")
+    template_str = "<button>{{ body }}</button>"
 
 @register(name="menu")
 class Menu(Component):
-    template = env.from_string("""\
+    template_str = """\
 <div class="menu">\
 {% for btn in buttons %}
   {% button body=btn %}\
 {% endfor %}
 </button>
-""")
+"""
 
 template = env.from_string("{% menu buttons=[1, 2, 3] %}")
 print(template.render())

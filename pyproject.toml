@@ -1,9 +1,11 @@
 [tool.poetry]
 name = "jinja2-components"
-version = "0.0.1"
-description = ""
+version = "0.0.2"
+description = "Streamlined way to build and reuse your Jinja2 templates from code"
 authors = ["octo-gone <nklimin007@gmail.com>"]
 readme = "README.md"
+repository = "https://github.com/octo-gone/jinja2-components"
+homepage = "https://github.com/octo-gone/jinja2-components"
 
 [tool.poetry.dependencies]
 python = "^3.8"
