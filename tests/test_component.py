@@ -26,7 +26,6 @@ class TestComponent(unittest.TestCase):
         )
 
     def test_unregistered(self):
-        print(ComponentsExtension.tags)
         with self.assertRaises(TemplateSyntaxError) as exc:
             env.from_string("{% unregistered_tag %}")
         self.assertEqual(
