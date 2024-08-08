@@ -18,12 +18,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Cache Poetry
-        id: cache-poetry
-        uses: actions/cache@v4
-        with:
-          path: ~/.poetry
-          key: poetry
       - name: Install Poetry
         if: steps.cache-poetry.outputs.cache-hit != 'true'
         run: |

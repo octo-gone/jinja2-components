@@ -10,6 +10,10 @@ class Component:
     template_name: t.ClassVar[t.Optional[str]]
     block: t.ClassVar[bool] = False
 
+    def __new__(cls, env: "Environment", *args, **kwargs):
+        template = cls.get_template(env, *args, **kwargs)
+        return template.render(cls.get_context(*args, **kwargs))
+
     @classmethod
     def get_context(cls, *args, **kwargs):
         return kwargs

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jinja2-components"
-version = "0.0.2"
+version = "0.0.3"
 description = "Streamlined way to build and reuse your Jinja2 templates from code"
 authors = ["octo-gone <nklimin007@gmail.com>"]
 readme = "README.md"

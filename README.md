@@ -131,3 +131,60 @@ print(template.render())
 #   <button>3</button>
 # </button>
 ```
+
+### Rendering component from code
+
+The idea behind this feature is to pass arguments and get rendered component inside the code.
+
+```python
+@register(name="button")
+class Button(Component):
+    template_str = "<button>{{ body }}</button>"
+
+@register(name="menu")
+class Menu(Component):
+    template_str = """\
+<div class="menu">\
+{% for btn in buttons %}
+  {% button body=btn %}\
+{% endfor %}
+</button>
+"""
+
+template = env.from_string("{% menu buttons=[1, 2, 3] %}")
+print(template.render())
+# <div class="menu">
+#   <button>1</button>
+#   <button>2</button>
+#   <button>3</button>
+# </button>
+
+print(Menu(env, buttons=[1, 2, 3]))
+# <div class="menu">
+#   <button>1</button>
+#   <button>2</button>
+#   <button>3</button>
+# </button>
+```
+
+Also it is possible to pass initialized components (because the are strings).
+
+```python
+@register(name="menu")
+class Menu(Component):
+    template_str = """\
+<div class="menu">\
+{% for btn in buttons %}
+  {{ btn }}\
+{% endfor %}
+</button>
+"""
+
+rendered = Menu(env, buttons=[Button(env, body=1), Button(env, body=2), Button(env, body=3)])
+print(rendered)
+# <div class="menu">
+#   <button>1</button>
+#   <button>2</button>
+#   <button>3</button>
+# </button>
+```

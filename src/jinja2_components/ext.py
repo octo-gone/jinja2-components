@@ -81,5 +81,4 @@ class ComponentsExtension(Extension):
 
     def render(self, tag: str, *args, **kwargs):
         component = self.components[tag]
-        template = component.get_template(self.environment, *args, **kwargs)
-        return template.render(component.get_context(*args, **kwargs))
+        return component(self.environment, *args, **kwargs)
