@@ -2,8 +2,6 @@
 
 Jinja2 Components offers a streamlined way to build and reuse your Jinja2 templates from code, inspired by `django-components` and `jinja2-simple-tags`.
 
-**Note:** This library is under active development, so the API may change.
-
 ## Key Ideas
 
 -   **Modular Design.** Break down your templates into reusable components for cleaner code and easier maintenance.
