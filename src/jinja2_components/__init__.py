@@ -1,19 +1,25 @@
+"""Jinja2 Components library for reusable template components."""
+
 import typing as t
 
-# Public API
 from jinja2_components.component import Component
 from jinja2_components.ext import ComponentsExtension
 
-TComponent = t.TypeVar("TComponent", bound=Component)
+if t.TYPE_CHECKING:
+    from jinja2.environment import Environment
 
 
-def register(
-    name: str,
-    ext_base_cls: t.Type[ComponentsExtension] = ComponentsExtension,
-):
-    def _register_component(cls: t.Type[TComponent]) -> t.Type[TComponent]:
-        ext_base_cls.tags.add(name)
-        ext_base_cls.components[name] = cls
-        return cls
+def register_component(name: str, env: "Environment"):  # type: ignore
+    """Helper function to register a component with a Jinja2 environment.
 
-    return _register_component
+    Args:
+        name: The tag name for the component.
+        env: The Jinja2 environment.
+
+    Returns:
+        A decorator function to register the component class.
+    """
+    return env.register_component(name)  # type: ignore
+
+
+__all__ = ["Component", "ComponentsExtension", "register_component"]

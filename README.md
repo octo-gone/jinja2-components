@@ -4,9 +4,13 @@ Jinja2 Components offers a streamlined way to build and reuse your Jinja2 templa
 
 ## Key Ideas
 
--   **Modular Design.** Break down your templates into reusable components for cleaner code and easier maintenance.
--   **Simple Syntax.** Use Jinja2 syntax to only use your components, lower you templates depth.
--   **Extensible Framework.** Customize your components using Python code.
+- **Modular Design.** Break down your templates into reusable components for cleaner code and easier maintenance.
+- **Simple Syntax.** Use Jinja2 syntax to only use your components, lower you templates depth.
+- **Extensible Framework.** Customize your components using Python code.
+
+## Known issues
+
+- Typing... Similar to any other Jinja2 extensions library's method `register_component` has been added after environment creation and not typed into `Environment` class. There is a workaround using library `register_component` function or `_ComponentsEnvironment` or protocol class with `register_component` method.
 
 ## Usage
 
@@ -16,7 +20,7 @@ Jinja2 Components offers a streamlined way to build and reuse your Jinja2 templa
     pip install jinja2-components
     ```
 
-2. Add extension to the Jinja2 environment.
+2. Add extension to the Jinja2 environment using class or by name `jinja2_components.ext.components` (`jinja2_components.ext.ComponentsExtension`).
 
     ```python
     from jinja2 import Environment
@@ -29,9 +33,15 @@ Jinja2 Components offers a streamlined way to build and reuse your Jinja2 templa
 
     ```python
     from jinja2 import Template
-    from jinja2_components import Component, register
+    from jinja2_components import Component, register_component
 
-    @register(name="hello")
+    @env.register_component(name="hello")
+    class Hello(Component):
+        template = Template("hello")
+
+    # OR
+
+    @register_component(name="hello", env=env)
     class Hello(Component):
         template = Template("hello")
     ```
@@ -49,7 +59,7 @@ Jinja2 Components offers a streamlined way to build and reuse your Jinja2 templa
 ### Standalone tag
 
 ```python
-@register(name="hello")
+@env.register_component(name="hello")
 class Hello(Component):
     template = Template("hello")
 
@@ -61,7 +71,7 @@ print(template.render())
 ### Block tag with body
 
 ```python
-@register(name="button")
+@env.register_component(name="button")
 class Button(Component):
     template = Template("<button>{{ body }}</button>")
     block = True
@@ -78,7 +88,7 @@ print(template.render())
 ### Replacing body
 
 ```python
-@register(name="base64")
+@env.register_component(name="base64")
 class Base64(Component):
     template = Template("{{ result }}")
     block = True
@@ -107,11 +117,11 @@ If the component's template was set directly, then this template also requires e
 But it possible to use `template_str` and `template_name` class variables for later instantiation from environment.
 
 ```python
-@register(name="button")
+@env.register_component(name="button")
 class Button(Component):
     template_str = "<button>{{ body }}</button>"
 
-@register(name="menu")
+@env.register_component(name="menu")
 class Menu(Component):
     template_str = """\
 <div class="menu">\
@@ -135,11 +145,11 @@ print(template.render())
 The idea behind this feature is to pass arguments and get rendered component inside the code.
 
 ```python
-@register(name="button")
+@env.register_component(name="button")
 class Button(Component):
     template_str = "<button>{{ body }}</button>"
 
-@register(name="menu")
+@env.register_component(name="menu")
 class Menu(Component):
     template_str = """\
 <div class="menu">\
@@ -168,7 +178,7 @@ print(Menu(env, buttons=[1, 2, 3]))
 Also it is possible to pass initialized components (because the are strings).
 
 ```python
-@register(name="menu")
+@env.register_component(name="menu")
 class Menu(Component):
     template_str = """\
 <div class="menu">\
@@ -186,3 +196,34 @@ print(rendered)
 #   <button>3</button>
 # </button>
 ```
+
+## API
+
+### Component
+
+Base class for creating reusable template components.
+
+**Class Variables:**
+- `template`: A pre-compiled Jinja2 template instance.
+- `template_str`: Template content as a string, compiled using the environment.
+- `template_name`: Name of a template file to load from the environment.
+- `block`: Set to `True` for block tags that wrap content (default: `False`).
+
+**Methods:**
+- `get_context(*args, **kwargs)`: Class method to prepare the rendering context. Defaults to returning `kwargs`.
+- `get_template(env, *args, **kwargs)`: Class method to retrieve or create the template instance.
+
+### ComponentsExtension
+
+Jinja2 extension that enables component tag parsing and registration.
+
+**Methods:**
+- `register_component(name: str)`: Returns a decorator to register a component class with the specified tag name.
+
+### register_component
+
+Helper function for registering components with a Jinja2 environment.
+
+**Parameters:**
+- `name`: The tag name used in templates.
+- `env`: The Jinja2 environment instance.

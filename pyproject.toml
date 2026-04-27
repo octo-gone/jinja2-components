@@ -1,32 +1,70 @@
-[tool.poetry]
+[project]
 name = "jinja2-components"
-version = "0.0.4"
+version = "1.0.0"
 description = "Streamlined way to build and reuse your Jinja2 templates from code"
-authors = ["octo-gone <nklimin007@gmail.com>"]
 readme = "README.md"
-repository = "https://github.com/octo-gone/jinja2-components"
-homepage = "https://github.com/octo-gone/jinja2-components"
+authors = [{ name = "octo-gone", email = "nklimin007@gmail.com" }]
+urls = { repository = "https://github.com/octo-gone/jinja2-components", homepage = "https://github.com/octo-gone/jinja2-components" }
+requires-python = ">=3.8"
+dependencies = ["jinja2>=2.10"]
 
-[tool.poetry.dependencies]
-python = "^3.8"
-jinja2 = ">=2.10"
-
-[tool.poetry.group.dev.dependencies]
-black = "^24.8.0"
-pylint = "^3.2.6"
-mypy = "^1.11.1"
-coverage = "^7.6.1"
-
-[tool.coverage.run]
-omit = [
-    "tests/*"
-]
-
-[tool.coverage.report]
-exclude_also = [
-    "if t.TYPE_CHECKING:"
+[dependency-groups]
+dev = [
+    "coverage>=7.6.1",
+    "isort>=5.13.2",
+    "mypy>=1.14.1",
+    "pre-commit>=3.5.0",
+    "pylint>=3.2.7",
+    "ruff>=0.15.12",
 ]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# https://coverage.readthedocs.io/en/latest/config.html
+[tool.coverage.run]
+omit = ["tests/*"]
+command_line = "-m unittest discover -s tests/"
+[tool.coverage.report]
+exclude_also = ["if t.TYPE_CHECKING:"]
+
+# https://mypy.readthedocs.io/en/stable/config_file.html
+[tool.mypy]
+python_version = "3.14"
+
+# https://pylint.readthedocs.io/en/stable/user_guide/configuration/all-options.html
+[tool.pylint.main]
+load-plugins = "pylint.extensions.docparams"
+init-hook = 'import sys; sys.path.append(".")'
+disable = [
+    # "C0114", # missing-module-docstring
+    # "C0115", # missing-class-docstring
+    # "C0116", # missing-function-docstring
+    # "C0301", # line-too-long
+    # "R0801", # duplicate-code
+    # "R0901", # too-many-ancestors
+    # "R0903", # too-few-public-methods
+    # "R0911", # too-many-return-statements
+    # "R0912", # too-many-branches
+    # "R0913", # too-many-arguments
+    # "R0914", # too-many-locals
+    # "R0915", # too-many-statements
+    # "R0917", # too-many-positional-arguments
+    # "R1702", # too-many-nested-blocks
+    # "W0511", # fixme
+    # "W0718", # broad-exception-caught
+]
+ignore-paths = "^tests/.*$"
+[tool.pylint.format]
+max-line-length = 120
+
+# https://docs.astral.sh/ruff/settings
+[tool.ruff]
+line-length = 120
+
+# https://github.com/PyCQA/isort/blob/main/docs/configuration/options.md
+[tool.isort]
+line_length = 120
+multi_line_output = 3
+include_trailing_comma = true

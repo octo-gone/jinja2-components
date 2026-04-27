@@ -1,0 +1,44 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+        exclude_types: [svg]
+      - id: check-toml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+
+  - repo: local
+    hooks:
+      - id: isort
+        name: isort
+        entry: isort
+        language: system
+        types_or: [python, pyi]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.1
+    hooks:
+      - id: ruff-format
+        types_or: [python, pyi]
+      - id: ruff-check
+        types_or: [python, pyi]
+        args: ["--fix", "--exit-non-zero-on-fix"]
+
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+        args: ["--rcfile=pyproject.toml"]
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+        args: [--strict]

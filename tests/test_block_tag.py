@@ -1,8 +1,8 @@
 import unittest
 
 from jinja2 import Environment, Template, TemplateSyntaxError, loaders
-from jinja2_components import ComponentsExtension, Component, register
 
+from jinja2_components import Component, ComponentsExtension
 
 env = Environment(
     loader=loaders.FileSystemLoader("tests/templates"),
@@ -10,18 +10,18 @@ env = Environment(
 )
 
 
-@register(name="blocktag")
+@env.register_component(name="blocktag")  # type: ignore
 class BlockTag(Component):
     template = Template("block")
     block = True
 
 
 class TestBlockTag(unittest.TestCase):
-    def test_block_tag(self):
+    def test_block_tag(self) -> None:
         template = env.from_string("{% blocktag %}{% endblocktag %}")
         self.assertEqual(template.render(), "block")
 
-    def test_incomplete_block_tag(self):
+    def test_incomplete_block_tag(self) -> None:
         with self.assertRaises(TemplateSyntaxError) as exc:
             env.from_string("{% blocktag %}")
         self.assertEqual(
@@ -31,11 +31,11 @@ class TestBlockTag(unittest.TestCase):
             "block that needs to be closed is 'blocktag'.",
         )
 
-    def test_replacement(self):
+    def test_replacement(self) -> None:
         template = env.from_string("{% blocktag %}73{% endblocktag %}")
         self.assertEqual(template.render(), "block")
 
-    def test_assignment(self):
+    def test_assignment(self) -> None:
         template = env.from_string("{% blocktag as res %}73{% endblocktag %}")
         self.assertEqual(template.render(), "")
         template = env.from_string("{% blocktag as res %}73{% endblocktag %}{{ res }}")

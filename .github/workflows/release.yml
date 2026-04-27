@@ -7,44 +7,43 @@ on:
 
 jobs:
   release:
-    name: Release
-    runs-on: 'ubuntu-latest'
+    name: Create Release Draft
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install Poetry
-        if: steps.cache-poetry.outputs.cache-hit != 'true'
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Add uv to PATH
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Extract project version from pyproject.toml
         run: |
-          curl -sSL https://install.python-poetry.org | python -
-      - name: Add Poetry to $PATH
-        run: |
-          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
-      - name: Add version to environment vars
-        run: |
-          PROJECT_VERSION=$(poetry version --short)
+          PROJECT_VERSION=$(uv run python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
           echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_ENV
+
       - name: Check if tag version matches project version
         run: |
           TAG=$(git describe HEAD --tags --abbrev=0)
-          echo $TAG
-          echo $PROJECT_VERSION
+          echo "Tag: $TAG"
+          echo "Project version: $PROJECT_VERSION"
           if [[ "$TAG" != "v$PROJECT_VERSION" ]]; then exit 1; fi
-      - name: Get Poetry version
-        run: poetry --version
-      - name: Check pyproject.toml validity
-        run: poetry check --no-interaction
-      - name: Install deps
-        run: |
-          poetry config virtualenvs.in-project true
-          poetry install --no-interaction
-      - name: Build
-        run: poetry build
+
+      - name: Install dependencies (including dev)
+        run: uv sync --group dev
+
+      - name: Build package
+        run: uv build
+
       - name: Create Release Draft
         uses: softprops/action-gh-release@v2
         with:
