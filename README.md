@@ -10,7 +10,7 @@ Jinja2 Components offers a streamlined way to build and reuse your Jinja2 templa
 
 ## Known issues
 
-- Typing... Similar to any other Jinja2 extensions library's method `register_component` has been added after environment creation and not typed into `Environment` class. There is a workaround using library `register_component` function or `_ComponentsEnvironment` or protocol class with `register_component` method.
+- Typing... Similar to any other Jinja2 extensions library's method `register_component` has been added after environment creation and not typed into `Environment` class. There is a workaround using library typed `register_component` function or `_ComponentsEnvironment` or protocol class with `register_component` method.
 
 ## Usage
 
@@ -35,7 +35,7 @@ Jinja2 Components offers a streamlined way to build and reuse your Jinja2 templa
     from jinja2 import Template
     from jinja2_components import Component, register_component
 
-    @env.register_component(name="hello")
+    @env.register_component(name="hello")  # type: ignore
     class Hello(Component):
         template = Template("hello")
 

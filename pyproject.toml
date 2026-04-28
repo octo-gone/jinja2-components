@@ -4,7 +4,7 @@ version = "1.0.0"
 description = "Streamlined way to build and reuse your Jinja2 templates from code"
 readme = "README.md"
 authors = [{ name = "octo-gone", email = "nklimin007@gmail.com" }]
-urls = { repository = "https://github.com/octo-gone/jinja2-components", homepage = "https://github.com/octo-gone/jinja2-components" }
+urls = { Repository = "https://github.com/octo-gone/jinja2-components", Homepage = "https://github.com/octo-gone/jinja2-components" }
 requires-python = ">=3.8"
 dependencies = ["jinja2>=2.10"]
 
@@ -31,30 +31,13 @@ exclude_also = ["if t.TYPE_CHECKING:"]
 
 # https://mypy.readthedocs.io/en/stable/config_file.html
 [tool.mypy]
-python_version = "3.14"
+python_version = "3.10"
 
 # https://pylint.readthedocs.io/en/stable/user_guide/configuration/all-options.html
 [tool.pylint.main]
 load-plugins = "pylint.extensions.docparams"
 init-hook = 'import sys; sys.path.append(".")'
-disable = [
-    # "C0114", # missing-module-docstring
-    # "C0115", # missing-class-docstring
-    # "C0116", # missing-function-docstring
-    # "C0301", # line-too-long
-    # "R0801", # duplicate-code
-    # "R0901", # too-many-ancestors
-    # "R0903", # too-few-public-methods
-    # "R0911", # too-many-return-statements
-    # "R0912", # too-many-branches
-    # "R0913", # too-many-arguments
-    # "R0914", # too-many-locals
-    # "R0915", # too-many-statements
-    # "R0917", # too-many-positional-arguments
-    # "R1702", # too-many-nested-blocks
-    # "W0511", # fixme
-    # "W0718", # broad-exception-caught
-]
+disable = []
 ignore-paths = "^tests/.*$"
 [tool.pylint.format]
 max-line-length = 120
