@@ -4,7 +4,7 @@ version = "1.0.0"
 description = "Streamlined way to build and reuse your Jinja2 templates from code"
 readme = "README.md"
 authors = [{ name = "octo-gone", email = "nklimin007@gmail.com" }]
-urls = { Repository = "https://github.com/octo-gone/jinja2-components", Homepage = "https://github.com/octo-gone/jinja2-components" }
+urls = { repository = "https://github.com/octo-gone/jinja2-components", homepage = "https://github.com/octo-gone/jinja2-components" }
 requires-python = ">=3.8"
 dependencies = ["jinja2>=2.10"]
 
